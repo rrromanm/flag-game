@@ -1,4 +1,3 @@
-// FlagGame.js
 import React, { useState, useEffect } from 'react';
 import './flagGame.css';
 
@@ -8,6 +7,8 @@ const FlagGame = () => {
   const [correctOptions, setCorrectOptions] = useState([]);
   const [clickedOptions, setClickedOptions] = useState([]);
   const [feedback, setFeedback] = useState(null);
+  const [correct, setCorrect] = useState(0);
+  const [incorrect, setIncorrect] = useState(0);
 
   const fetchRandomCountry = async () => {
     try {
@@ -27,8 +28,8 @@ const FlagGame = () => {
         flag,
       });
 
-      setOptions(shuffleArray([...randomNames, name])); // include correctName directly
-      setFeedback(null); // Clear previous feedback
+      setOptions(shuffleArray([...randomNames, name]));
+      setFeedback(null);
     } catch (error) {
       console.error('Error fetching random country:', error);
     }
@@ -65,25 +66,24 @@ const FlagGame = () => {
   };
 
   const handleOptionClick = (selectedName) => {
-    // Determine correctness
     const isCorrect = selectedName === randomCountry.name;
 
-    // Update feedback
-    setFeedback(isCorrect ? 'Correct!' : 'Incorrect. Try again!');
+    setFeedback(isCorrect ? 'Correct!' : 'Incorrect!');
 
-    // Update the correctness of the clicked button
     setCorrectOptions((prevCorrectOptions) => {
       const newCorrectOptions = [...prevCorrectOptions];
       if (isCorrect) {
         newCorrectOptions.push(selectedName);
+        setCorrect((prevCorrect) => prevCorrect + 0.5);
+      }
+      else {
+        setIncorrect((prevIncorrect) => prevIncorrect + 0.5);
       }
       return newCorrectOptions;
     });
 
-    // Update the clicked options
     setClickedOptions((prevClickedOptions) => [...prevClickedOptions, selectedName]);
 
-    // Fetch a new random country after a brief delay
     setTimeout(() => {
       fetchRandomCountry();
     }, 1000);
@@ -97,6 +97,8 @@ const FlagGame = () => {
     <div className='game'>
       <h1 className='title'>GUESS THE COUNTRY!</h1>
       <div className="rectangle">
+        <p>Correct gueses: {correct}</p>
+        <p>Incorrect gueses: {incorrect}</p>
         <img src={randomCountry.flag} alt={`Flag of ${randomCountry.name}`} />
         <div>
           {options.map((option, index) => (
