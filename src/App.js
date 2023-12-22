@@ -1,13 +1,11 @@
 import React from 'react';
 import './App.css';
-import Game from './Components/game';
+import FlagGame from './Components/FlagGame';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Game />
-      </header>
+        <FlagGame/>
     </div>
   );
 }
